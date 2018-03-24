@@ -1,0 +1,8 @@
+    version: '2'
+    services:
+        trueatmo:
+            build: ./trueatmo
+            ports:
+            - 8000:8000
+            volumes:
+            - ./trueatmo:/trueatmo
