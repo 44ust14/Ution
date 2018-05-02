@@ -1,8 +1,8 @@
 # -*- coding:utf-8 -*-
+import json
 from flask import Flask, request, jsonify
 from flask_restful import Resource, Api
 from flask_sqlalchemy import SQLAlchemy
-
 
 app = Flask(__name__)
 api = Api(app)
@@ -52,10 +52,12 @@ class Unprocessed(db.Model):
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_tag = db.Column(db.String(50))
+    telegram_id = db.Column(db.String(50))
     locations = db.Column(db.String(80))
 
-    def __init__(self, user_tag, locations, id=None):
+    def __init__(self, telegram_id, user_tag, locations, id=None):
         self.id = id
+        self.telegram_id = telegram_id
         self.user_tag = user_tag
         self.locations = locations
 
@@ -87,8 +89,8 @@ class Processed(db.Model):
     def __repr__(self):
         return '<Processed %r>' % self.city_or_country
 
-class UnprocessedApi(Resource):
 
+class UnprocessedApi(Resource):
     def get(self):
         city_or_country = request.args['city_or_country']
         Cmin = request.args['Cmin']
@@ -98,9 +100,8 @@ class UnprocessedApi(Resource):
         wind = request.args['wind']
         site = request.args['site']
         time = request.args['time']
-        user = User.query.filter_by(city_or_country=city_or_country,).first()
+        user = User.query.filter_by(city_or_country=city_or_country, ).first()
         return jsonify({'Cmin': Cmin})
-
 
     def post(self):
         city_or_country = request.form['city_or_country']
@@ -117,19 +118,23 @@ class UnprocessedApi(Resource):
         return {'status': 'ok'}
 
 
-
 class UserApi(Resource):
-    def get(self, user_tag):
-        user = User.query.filter_by(user_tag=user_tag).first()
-        return {'user_tag': 'locations'}
+    def get(self, telegram_id):
+        user = User.query.filter_by(telegram_id=telegram_id).first()
+        respons = {'id': user.id,
+                   'user_tag': user.user_tag,
+                   'telegram_id': user.telegram_id,
+                   'locations': user.locations}
+        return json.dumps(respons)
 
     def post(self):
         user_tag = request.form['user_tag']
+        telegram_id = request.form['telegram_id']
         locations = request.form['locations']
-        user = User(user_tag=user_tag, locations=locations)
+        user = User(user_tag=user_tag, locations=locations,telegram_id=telegram_id)
         db.session.add(user)
         db.session.commit()
-        return {'status': 'ok'}
+        return json.dumps({'status': 'ok'})
 
 
 class ManagerDBApi(Resource):
@@ -142,7 +147,7 @@ class ManagerDBApi(Resource):
 
 
 api.add_resource(UserApi, '/person')
-# api.add_resource(UserApi, '/person/<user_tag>')
+api.add_resource(ManagerDBApi, '/manager')
 api.add_resource(UnprocessedApi, '/unprocessed')
 
 if __name__ == '__main__':
