@@ -13,8 +13,8 @@ import bs4, requests
 message_with_inline_keyboard = None
 
 def on_chat_message(msg):
-    content_type, chat_type, chat_id ,first_name= telepot.glance(msg)
-    print('Chat:', content_type, chat_type, chat_id, first_name)
+    content_type, chat_type, chat_id = telepot.glance(msg)
+    print('Chat:', content_type, chat_type, chat_id)
     # update['message']['chat']['first_name']
     if content_type != 'text':
         return

@@ -39,3 +39,4 @@ w3lib==1.19.0
 Werkzeug==0.14.1
 zope.interface==4.4.3
 psycopg2
+telepot
