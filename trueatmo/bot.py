@@ -1,5 +1,4 @@
-# -*- coding:utf-8 -*-
-import sys
+# import sys
 import time
 # import threading
 # import random
@@ -12,35 +11,23 @@ import requests
 from bs4 import BeautifulSoup
 import bs4, requests
 message_with_inline_keyboard = None
+
 def on_chat_message(msg):
-    content_type, chat_type, chat_id = telepot.glance(msg)
-    print('Chat:', content_type, chat_type, chat_id)
+    content_type, chat_type, chat_id ,first_name= telepot.glance(msg)
+    print('Chat:', content_type, chat_type, chat_id, first_name)
+    # update['message']['chat']['first_name']
     if content_type != 'text':
         return
     command = msg['text'].lower()
-# bot.sendMessage(chat_id, 'This is noooooot finnal noot wooorking keyboard', reply_markup=ReplyKeyboardMarkup(
-# keyboard=[
-# [KeyboardButton(text="🗓️ Current Weather 🗓️"), KeyboardButton(text="📅 Weekly Weather 📅"),
-# KeyboardButton(text="🔧 Settings 🔧")]
-# ]
-# , resize_keyboard=True))
 
-    if command == '/start':
 
-        markup = ReplyKeyboardMarkup(keyboard=[
-        [KeyboardButton(text='🗓️ current weather 🗓️'), KeyboardButton(text='📅 weekly weather 📅',)],
-        [KeyboardButton(text='🔧 settings 🔧')],
-        ])
-        bot.sendMessage(chat_id, '*HI!*', reply_markup=markup, parse_mode='Markdown')
-    elif command != '/start' or '🗓️ current weather 🗓️' or '📅 weekly weather 📅' or '🔧 settings 🔧' or '📌 last location 📌' or '🌐 languages 🌐' or '📝 units 📝' or '🔙 back 🔙' or '⏰ alerts ⏰' or 'celsium(°C)' or 'fahrenheit(°F)' or '❌ cancel ❌' or '🏴󠁧󠁢󠁥󠁮󠁧󠁿 english 🏴󠁧󠁢󠁥󠁮󠁧󠁿' or '🇺🇦 українська 🇺🇦' or '🇩🇪 deutsch 🇩🇪' or '🇷🇺 русский 🇷🇺':
-        def search_meteo(text):
-            response = requests.post('http://meteo.ua/ua/search-forecast-by-city-name', data = {'name': text})
-            b = bs4.BeautifulSoup(response.text, "html.parser")
-            p3 = b.select('.main_cont p a')
-            hrefs = p3[0]['href']
-            print(hrefs)
-            return hrefs
-
+    def search_meteo(text):
+        response = requests.post('http://meteo.ua/ua/search-forecast-by-city-name', data={'name': text})
+        b = bs4.BeautifulSoup(response.text, "html.parser")
+        p3 = b.select('.main_cont p a')
+        hrefs = p3[0]['href']
+        print(hrefs)
+        return hrefs
 
         hrefs = search_meteo(text=text)
         s = requests.get('http://meteo.ua{}'.format(hrefs))
@@ -60,41 +47,75 @@ def on_chat_message(msg):
         p3 = b.select('.wwt_tmps')
         minmaxdoba = p3[0].getText()
         print(minmaxdoba)
-        bot.sendMessage(chat_id,'message')
-    elif command == '🗓️ current weather 🗓️':
-        # markup = ReplyKeyboardMarkup(keyboard=[
-        # [KeyboardButton(text='📌 last location 📌')],[ KeyboardButton(text='➕ new location ➕')],
-        # [KeyboardButton(text='🗺️ my location 🗺️', request_location=True)],[KeyboardButton(text='🔙 back 🔙')]
-        # ])
+        bot.sendMessage(chat_id, 'message')
+    if command == '/start' :
 
-        # def search_meteo(text):
-        #     response = requests.post('http://meteo.ua/ua/search-forecast-by-city-name', data = {'name': text})
-        #     b = bs4.BeautifulSoup(response.text, "html.parser")
-        #     p3 = b.select('.main_cont p a')
-        #     hrefs = p3[0]['href']
-        #     print(hrefs)
-        #     return hrefs
-        #
-        #
-        # hrefs = search_meteo(text=text)
-        # s = requests.get('http://meteo.ua{}'.format(hrefs))
-        # b = bs4.BeautifulSoup(s.text, "html.parser")
-        # p3 = b.select('.wi_now')
-        # tempnow = p3[0].getText()
-        # print(tempnow)
-        #
-        # p3 = b.select('.wiw_power')
-        # windnow = p3[0].getText()
-        # print(windnow)
-        #
-        # p3 = b.select('.wi_right')
-        # day = p3[0].getText()
-        # print(day)
-        #
-        # p3 = b.select('.wwt_tmps')
-        # minmaxdoba = p3[0].getText()
-        # print(minmaxdoba)
-        bot.sendMessage(chat_id, 'Write your *location*', parse_mode='Markdown')
+        markup = ReplyKeyboardMarkup(keyboard=[
+        [KeyboardButton(text='🗓️ current weather 🗓️'), KeyboardButton(text='📅 weekly weather 📅',)],
+        [KeyboardButton(text='🔧 settings 🔧')],
+        ])
+        bot.sendMessage(chat_id, '*HI!*', reply_markup=markup, parse_mode='Markdown')
+    # elif command != '/start' or '🗓️ current weather 🗓️' or '📅 weekly weather 📅' or '🔧 settings 🔧' or '📌 last location 📌' or '🌐 languages 🌐' or '📝 units 📝' or '🔙 back 🔙' or '⏰ alerts ⏰' or 'celsium(°C)' or 'fahrenheit(°F)' or '❌ cancel ❌' or '🏴󠁧󠁢󠁥󠁮󠁧󠁿 english 🏴󠁧󠁢󠁥󠁮󠁧󠁿' or '🇺🇦 українська 🇺🇦' or '🇩🇪 deutsch 🇩🇪' or '🇷🇺 русский 🇷🇺':
+    #     def search_meteo(text):
+    #         response = requests.post('http://meteo.ua/ua/search-forecast-by-city-name', data={'name': text})
+    #         b = bs4.BeautifulSoup(response.text, "html.parser")
+    #         p3 = b.select('.main_cont p a')
+    #         hrefs = p3[0]['href']
+    #         print(hrefs)
+    #         return hrefs
+    #
+    #     hrefs = search_meteo(text=text)
+    #     s = requests.get('http://meteo.ua{}'.format(hrefs))
+    #     b = bs4.BeautifulSoup(s.text, "html.parser")
+    #     p3 = b.select('.wi_now')
+    #     tempnow = p3[0].getText()
+    #     print(tempnow)
+    #
+    #     p3 = b.select('.wiw_power')
+    #     windnow = p3[0].getText()
+    #     print(windnow)
+    #
+    #     p3 = b.select('.wi_right')
+    #     day = p3[0].getText()
+    #     print(day)
+    #
+    #     p3 = b.select('.wwt_tmps')
+    #     minmaxdoba = p3[0].getText()
+    #     print(minmaxdoba)
+    #     bot.sendMessage(chat_id,'message')
+    elif command == '🗓️ current weather 🗓️':
+        text = msg['text'].lower()
+
+        def search_meteo(text):
+            response = requests.post('http://meteo.ua/ua/search-forecast-by-city-name', data={'name': text})
+            # with open('test.html', 'w') as file:
+            #     file.write(response.text)
+            b = bs4.BeautifulSoup(response.text, "html.parser")
+            p3 = b.select('.main_cont p a')
+            if not p3:
+                return response.text
+            hrefs = p3[0]['href']
+            print(hrefs)
+            return hrefs
+
+        data = search_meteo(text=text)
+        if data.startswith('http'):
+            data = requests.get('http://meteo.ua{}'.format(data))
+            data = data.text
+        b = bs4.BeautifulSoup(data, "html.parser")
+        p3 = b.select('.wi_now')
+        tempnow = p3[0].getText()
+        print(tempnow)
+        p3 = b.select('.wiw_power')
+        windnow = p3[0].getText()
+        print(windnow)
+        p3 = b.select('.wi_right')
+        day = p3[0].getText()
+        print(day)
+        p3 = b.select('.wwt_tmps')
+        minmaxdoba = p3[0].getText()
+        print(minmaxdoba)
+        bot.sendMessage(chat_id, tempnow, parse_mode='Markdown')
     elif command == '📌 last location 📌':
         markup = ReplyKeyboardMarkup(keyboard=[
             [KeyboardButton(text='🗓️ current weather 🗓️'), KeyboardButton(text='📅 weekly weather 📅', )],
@@ -250,3 +271,5 @@ print('Listening ...')
 # Keep the program running.
 while 1:
     time.sleep(10)
+
+
