@@ -80,6 +80,15 @@ def home(user_tag , locations , id):
     #return 'ok'
     return 'You have created User with tag that equials {} , and with location {}'.format(user_tag,locations)
 
+def as_dict(object):
+    res = []
+    if isinstance(object,list):
+        for ob in object:
+            res.append({c.name: getattr(ob, c.name) for c in ob.__table__.columns})
+    else:
+        res.append({c.name: getattr(object, c.name) for c in object.__table__.columns})
+    return res
+
 if __name__ == '__main__':
     app.run(port = 4777)
     User1 = User(id = id,user_tag = 'ghhgh' , locations = 'hghgh')
