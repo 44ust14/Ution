@@ -118,23 +118,61 @@ class UnprocessedApi(Resource):
         return {'status': 'ok'}
 
 
+
+
 class UserApi(Resource):
     def get(self, telegram_id):
-        user = User.query.filter_by(telegram_id=telegram_id).first()
-        respons = {'id': user.id,
-                   'user_tag': user.user_tag,
-                   'telegram_id': user.telegram_id,
-                   'locations': user.locations}
-        return json.dumps(respons)
+        try:
+            user = User.query.filter_by(telegram_id=telegram_id).first()
+            data = {'id': user.id,
+                    'user_tag': user.user_tag,
+                    'telegram_id': user.telegram_id,
+                    'locations': user.locations}
+            response = {'is_error': 0,
+                        'data': data}
+        except Exception as error:
+            response = {'is_error': 1,
+                        'error_log': str(error)}
+        return json.dumps(response)
 
     def post(self):
-        user_tag = request.form['user_tag']
-        telegram_id = request.form['telegram_id']
-        locations = request.form['locations']
-        user = User(user_tag=user_tag, locations=locations,telegram_id=telegram_id)
-        db.session.add(user)
-        db.session.commit()
-        return json.dumps({'status': 'ok'})
+        try:
+            user_tag = request.form['user_tag']
+            telegram_id = request.form['telegram_id']
+            locations = request.form['locations']
+            user = User(user_tag=user_tag, locations=locations, telegram_id=telegram_id)
+            db.session.add(user)
+            db.session.commit()
+            user = User.query.filter_by(telegram_id=telegram_id).first()
+            data = {'id': user.id}
+            response = {'is_error': 0,
+                        'data': data}
+
+        except Exception as error:
+            response = {'is_error': 1,
+                        'error_log': str(error)}
+        return json.dumps(response)
+
+    def put(self):
+        try:
+            id = request.form['id']
+            user_tag = request.form['user_tag']
+            telegram_id = request.form['telegram_id']
+            locations = request.form['locations']
+            user = User.query.filter_by(id=id).first()
+            user.user_tag = user_tag
+            user.telegram_id = telegram_id
+            user.locations = locations
+            db.session.add(user)
+            db.session.commit()
+            data = {'id': user.id}
+            response = {'is_error': 0,
+                        'data': data}
+
+        except Exception as error:
+            response = {'is_error': 1,
+                        'error_log': str(error)}
+        return json.dumps(response)
 
 
 class ManagerDBApi(Resource):
