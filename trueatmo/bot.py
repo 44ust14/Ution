@@ -14,8 +14,10 @@ message_with_inline_keyboard = None
 
 def on_chat_message(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
-    print(msg['from']['username'])
-    # response = requests.get('127.0.0.1:8001/person/{}'.format(chat_id))
+    # print(msg['from']['id'])
+    # print(msg['from']['username'])
+    print(msg)
+    # response = requests.get('127.0.0.1:8001/person/{}'.format(msg['from']['id']))
     # update['message']['chat']['first_name']
     if content_type != 'text':
         return
@@ -64,15 +66,17 @@ def on_chat_message(msg):
         ])
         # bot.sendMessage(chat_id, "", parse_mode='HTML')
         bot.sendMessage(chat_id, '*HI!*', reply_markup=markup, parse_mode='Markdown')
-
     elif command == '🗓️ current weather 🗓️':
-
-
-        markup = ReplyKeyboardMarkup(keyboard=[
-            [KeyboardButton(text=last_location_current), KeyboardButton(text='➕ new location 🗓️' )],[KeyboardButton(text='🔙 back 🔙')]
-        ])
-
-        bot.sendMessage(chat_id, 'Choose location:', reply_markup=markup, parse_mode='Markdown')
+        r_get = requests.get('127.0.0.1:8001/person/{}'.format(msg['from']['id']))
+        r_post = requests.post('127.0.0.1:8001/person/{}'.format(msg['from']['id']))
+        r_put = requests.put('127.0.0.1:8001/person/{}'.format(msg['from']['id']))
+        # if r_get response == {'is_error' = 1, 'error_log'  = str(error)}:
+        if True:
+            r_post(user_tag = msg['from']['username'],telegram_id = msg['from']['id'])
+            bot.sendMessage(chat_id, 'Write location')
+            r_put(locations = (msg['text']))
+        else:
+            pass
     elif command == '➕ new location 🗓️':
         markup = ReplyKeyboardMarkup(keyboard=[
             [KeyboardButton(text='🗓️ ️show weather 🗓️')]
