@@ -70,13 +70,40 @@ def on_chat_message(msg):
         r_get = requests.get('127.0.0.1:8001/person/{}'.format(msg['from']['id']))
         r_post = requests.post('127.0.0.1:8001/person/{}'.format(msg['from']['id']))
         r_put = requests.put('127.0.0.1:8001/person/{}'.format(msg['from']['id']))
-        # if r_get response == {'is_error' = 1, 'error_log'  = str(error)}:
-        if True:
+        if r_get response == {'is_error' = 1, 'error_log'  = str(error)}:
+            # |якщо юзера немає в базі даних то записується його юзернейм і айді в базу даних
             r_post(user_tag = msg['from']['username'],telegram_id = msg['from']['id'])
+            # |якщо юзер тільки що був записаний в базу, то в нього немає локації, тому бот просить надіслати   1/2
+            # |повідомлення і записує локацію в базу                                                            2/2
             bot.sendMessage(chat_id, 'Write location')
-            r_put(locations = (msg['text']))
+            r_put(locations = (msg['text']),user_tag = msg['from']['username'],telegram_id = msg['from']['id'])
         else:
             pass
+        if r_get data = {'locations' : null}:
+                bot.sendMessage(chat_id, 'Write location')
+                r_put(locations=(msg['text']), user_tag=msg['from']['username'], telegram_id=msg['from']['id'])
+        else :
+            pass
+        if r_get data{'locations' = str}:
+            #замість str потрібно якось перевірити що в 'locations' лежить стрінга
+            markup = ReplyKeyboardMarkup(keyboard=[
+                [KeyboardButton(text='🗓️ current weather 🗓️'), KeyboardButton(text='📅 weekly weather 📅', )],
+                [KeyboardButton(text='🔧 settings 🔧')],
+            ])
+            location = data{'locations'}
+            dataa = search_meteo(text=location)
+            if dataa.startswith('http'):
+                dataa = requests.get('http://meteo.ua{}'.format(dataa))
+                dataa = dataa.location
+            b = bs4.BeautifulSoup(dataa, "html.parser")
+            p3 = b.select('.wi_now')
+            tempnow = p3[0].getText()
+            p3 = b.select('.wiw_power')
+            windnow = p3[0].getText()
+            # tempnow = '\t'.join(tempnow.split())
+            # windnow = windnow + '\t'
+            weather_now = tempnow + windnow
+            bot.sendMessage(chat_id, weather_now, reply_markup=markup)
     elif command == '➕ new location 🗓️':
         markup = ReplyKeyboardMarkup(keyboard=[
             [KeyboardButton(text='🗓️ ️show weather 🗓️')]
