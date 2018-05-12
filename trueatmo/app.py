@@ -7,19 +7,23 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 api = Api(app)
 
-DBUSER = 'trueatmo'
-DBPASS = '1q2w3e'
-DBHOST = 'db'
-DBPORT = '5432'
-DBNAME = 'trueatmo'
-
-app.config['SQLALCHEMY_DATABASE_URI'] = \
-    "postgresql+psycopg2://{user}:{passwd}@{host}:{port}/{db}".format(user=DBUSER,
-                                                                      passwd=DBPASS,
-                                                                      host=DBHOST,
-                                                                      port=DBPORT,
-                                                                      db=DBNAME)
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///C:\\Users\\GOITeens\\Neeew ution\\my_db.db"
+# "C:\\Users\\GOITeens\\Neeew ution"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+# DBUSER = 'trueatmo'
+# DBPASS = '1q2w3e'
+# DBHOST = 'db'
+# DBPORT = '5432'
+# DBNAME = 'trueatmo'
+#
+# app.config['SQLALCHEMY_DATABASE_URI'] = \
+#     "postgresql+psycopg2://{user}:{passwd}@{host}:{port}/{db}".format(user=DBUSER,
+#                                                                       passwd=DBPASS,
+#                                                                       host=DBHOST,
+#                                                                       port=DBPORT,
+#                                                                       db=DBNAME)
+# db = SQLAlchemy(app)
 
 
 class Unprocessed(db.Model):
@@ -121,15 +125,16 @@ class UnprocessedApi(Resource):
 
 
 class UserApi(Resource):
-    def get(self, telegram_id):
+    def get(self):
         try:
+            telegram_id = request.args.get('telegram_id')
             user = User.query.filter_by(telegram_id=telegram_id).first()
             data = {'id': user.id,
                     'user_tag': user.user_tag,
                     'telegram_id': user.telegram_id,
                     'locations': user.locations}
             response = {'is_error': 0,
-                        'data': data}
+                    'data': data}
         except Exception as error:
             response = {'is_error': 1,
                         'error_log': str(error)}
@@ -189,4 +194,4 @@ api.add_resource(ManagerDBApi, '/manager')
 api.add_resource(UnprocessedApi, '/unprocessed')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8001, host='0.0.0.0')
+    app.run(debug=True, port=8002)

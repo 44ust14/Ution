@@ -1,4 +1,5 @@
 # import sys
+
 import time
 # import threading
 # import random
@@ -67,77 +68,84 @@ def on_chat_message(msg):
         # bot.sendMessage(chat_id, "", parse_mode='HTML')
         bot.sendMessage(chat_id, '*HI!*', reply_markup=markup, parse_mode='Markdown')
     elif command == '🗓️ current weather 🗓️':
-        r_get = requests.get('127.0.0.1:8001/person/{}'.format(msg['from']['id']))
-        r_post = requests.post('127.0.0.1:8001/person/{}'.format(msg['from']['id']))
-        r_put = requests.put('127.0.0.1:8001/person/{}'.format(msg['from']['id']))
-        if r_get response == {'is_error' = 1, 'error_log'  = str(error)}:
-            # |якщо юзера немає в базі даних то записується його юзернейм і айді в базу даних
-            r_post(user_tag = msg['from']['username'],telegram_id = msg['from']['id'])
-            # |якщо юзер тільки що був записаний в базу, то в нього немає локації, тому бот просить надіслати   1/2
-            # |повідомлення і записує локацію в базу                                                            2/2
-            bot.sendMessage(chat_id, 'Write location')
-            r_put(locations = (msg['text']),user_tag = msg['from']['username'],telegram_id = msg['from']['id'])
+        r_get = requests.get('http://127.0.0.1:8002/person?telegram_id={}'.format(msg['from']['id']))
+        response = r_get.json()
+        print(response)
+        # r_put = requests.put('http://127.0.0.1:8001/person/',data = msg['from']['id'])
+        if not response['is_error']:
+            if not response['data']:
+                # |якщо юзера немає в базі даних то записується його юзернейм і айді в базу даних
+                data = {'user_tag':msg['from']['username'],'telegram_id':msg['from']['id']}
+                r_post = requests.post('http://127.0.0.1:8001/person/',data = data)
+                r_post_data = r_post.json()
+                user_id = r_post_data['id']
+                # |якщо юзер тільки що був записаний в базу, то в нього немає локації, тому бот просить надіслати   1/2
+                # |повідомлення і записує локацію в ба
+                bot.sendMessage(chat_id, 'Write location')
+                data = {'locations':msg['text'],'id':user_id,'user_tag':msg['from']['username'],'telegram_id':msg['from']['id']}
+                r_put = requests.put('http://127.0.0.1:8001/person/',data = data)
+                # r_put(locations = (msg['text']),user_tag = msg['from']['username'],telegram_id = msg['from']['id'])
         else:
             pass
-        if r_get data = {'locations' : null}:
-                bot.sendMessage(chat_id, 'Write location')
-                r_put(locations=(msg['text']), user_tag=msg['from']['username'], telegram_id=msg['from']['id'])
-        else :
-            pass
-        if r_get data{'locations' = str}:
-            #замість str потрібно якось перевірити що в 'locations' лежить стрінга
-            markup = ReplyKeyboardMarkup(keyboard=[
-                [KeyboardButton(text='🗓️ current weather 🗓️'), KeyboardButton(text='📅 weekly weather 📅', )],
-                [KeyboardButton(text='🔧 settings 🔧')],
-            ])
-            location = data{'locations'}
-            dataa = search_meteo(text=location)
-            if dataa.startswith('http'):
-                dataa = requests.get('http://meteo.ua{}'.format(dataa))
-                dataa = dataa.location
-            b = bs4.BeautifulSoup(dataa, "html.parser")
-            p3 = b.select('.wi_now')
-            tempnow = p3[0].getText()
-            p3 = b.select('.wiw_power')
-            windnow = p3[0].getText()
-            # tempnow = '\t'.join(tempnow.split())
-            # windnow = windnow + '\t'
-            weather_now = tempnow + windnow
-            bot.sendMessage(chat_id, weather_now, reply_markup=markup)
-    elif command == '➕ new location 🗓️':
-        markup = ReplyKeyboardMarkup(keyboard=[
-            [KeyboardButton(text='🗓️ ️show weather 🗓️')]
-        ])
-        bot.sendMessage(chat_id,'Write your city', reply_markup=markup)
-    elif command == last_location_current:
-        markup = ReplyKeyboardMarkup(keyboard=[
-            [KeyboardButton(text='🗓️ current weather 🗓️'), KeyboardButton(text='📅 weekly weather 📅', )],
-            [KeyboardButton(text='🔧 settings 🔧')],
-        ])
-        # location це локація яка записана в базу даних
-        location= 'lvov'
-        data = search_meteo(text=location)
-        if data.startswith('http'):
-            data = requests.get('http://meteo.ua{}'.format(data))
-            data = data.location
-        b = bs4.BeautifulSoup(data, "html.parser")
-        p3 = b.select('.wi_now')
-        tempnow = p3[0].getText()
-        print(tempnow)
-        p3 = b.select('.wiw_power')
-        windnow = p3[0].getText()
-        print(windnow)
-        p3 = b.select('.wi_right')
-        day = p3[0].getText()
-        print(day)
-        p3 = b.select('.wwt_tmps')
-        minmaxdoba = p3[0].getText()
-        print(minmaxdoba)
-        # minmaxdoba = '\t'.join(minmaxdoba.split())
-        tempnow = '\t'.join(tempnow.split())
-        windnow= windnow+'\t'
-        weather_now= tempnow+ windnow+ minmaxdoba
-        bot.sendMessage(chat_id,weather_now, reply_markup=markup)
+    #     if r_get data = {'locations' : null}:
+    #             bot.sendMessage(chat_id, 'Write location')
+    #             r_put(locations=(msg['text']), user_tag=msg['from']['username'], telegram_id=msg['from']['id'])
+    #     else :
+    #         pass
+    #     if r_get data{'locations' = str}:
+    #         #замість str потрібно якось перевірити що в 'locations' лежить стрінга
+    #         markup = ReplyKeyboardMarkup(keyboard=[
+    #             [KeyboardButton(text='🗓️ current weather 🗓️'), KeyboardButton(text='📅 weekly weather 📅', )],
+    #             [KeyboardButton(text='🔧 settings 🔧')],
+    #         ])
+    #         location = data{'locations'}
+    #         dataa = search_meteo(text=location)
+    #         if dataa.startswith('http'):
+    #             dataa = requests.get('http://meteo.ua{}'.format(dataa))
+    #             dataa = dataa.location
+    #         b = bs4.BeautifulSoup(dataa, "html.parser")
+    #         p3 = b.select('.wi_now')
+    #         tempnow = p3[0].getText()
+    #         p3 = b.select('.wiw_power')
+    #         windnow = p3[0].getText()
+    #         # tempnow = '\t'.join(tempnow.split())
+    #         # windnow = windnow + '\t'
+    #         weather_now = tempnow + windnow
+    #         bot.sendMessage(chat_id, weather_now, reply_markup=markup)
+    # elif command == '➕ new location 🗓️':
+    #     markup = ReplyKeyboardMarkup(keyboard=[
+    #         [KeyboardButton(text='🗓️ ️show weather 🗓️')]
+    #     ])
+    #     bot.sendMessage(chat_id,'Write your city', reply_markup=markup)
+    # elif command == last_location_current:
+    #     markup = ReplyKeyboardMarkup(keyboard=[
+    #         [KeyboardButton(text='🗓️ current weather 🗓️'), KeyboardButton(text='📅 weekly weather 📅', )],
+    #         [KeyboardButton(text='🔧 settings 🔧')],
+    #     ])
+    #     # location це локація яка записана в базу даних
+    #     location= 'lvov'
+    #     data = search_meteo(text=location)
+    #     if data.startswith('http'):
+    #         data = requests.get('http://meteo.ua{}'.format(data))
+    #         data = data.location
+    #     b = bs4.BeautifulSoup(data, "html.parser")
+    #     p3 = b.select('.wi_now')
+    #     tempnow = p3[0].getText()
+    #     print(tempnow)
+    #     p3 = b.select('.wiw_power')
+    #     windnow = p3[0].getText()
+    #     print(windnow)
+    #     p3 = b.select('.wi_right')
+    #     day = p3[0].getText()
+    #     print(day)
+    #     p3 = b.select('.wwt_tmps')
+    #     minmaxdoba = p3[0].getText()
+    #     print(minmaxdoba)
+    #     # minmaxdoba = '\t'.join(minmaxdoba.split())
+    #     tempnow = '\t'.join(tempnow.split())
+    #     windnow= windnow+'\t'
+    #     weather_now= tempnow+ windnow+ minmaxdoba
+    #     bot.sendMessage(chat_id,weather_now, reply_markup=markup)
     elif command == '📅 weekly weather 📅':
         markup = ReplyKeyboardMarkup(keyboard=[
         [KeyboardButton(text=last_location_weekly), KeyboardButton(text='➕ new location 📅')],[KeyboardButton(text='🔙 back 🔙')]
@@ -282,7 +290,7 @@ def on_chat_message(msg):
         bot.sendMessage(chat_id, '*Виберіть мову*', reply_markup=markup,
 parse_mode='Markdown')
 # TOKEN = '577877864:AAEh1MKE62KPntQjSuEtH53sDYJDes3oYyM' newskit token
-TOKEN = "597420522:AAEe-6mOcCYWUnMLoIdDDyixf3Jw9YDKVFc"
+TOKEN = "597420522:AAE3rbd2nwnrfFgLwOxGPp2AvKUqSwX3Srg"
 bot = telepot.Bot(TOKEN)
 answerer = telepot.helper.Answerer(bot)
 MessageLoop(bot, {'chat': on_chat_message}).run_as_thread()
