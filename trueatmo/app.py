@@ -129,12 +129,15 @@ class UserApi(Resource):
         try:
             telegram_id = request.args.get('telegram_id')
             user = User.query.filter_by(telegram_id=telegram_id).first()
-            data = {'id': user.id,
-                    'user_tag': user.user_tag,
-                    'telegram_id': user.telegram_id,
-                    'locations': user.locations}
+            data= {}
+            if user:
+                data = {'id': user.id,
+                        'user_tag': user.user_tag,
+                        'telegram_id': user.telegram_id,
+                        'locations': user.locations}
             response = {'is_error': 0,
                     'data': data}
+
         except Exception as error:
             response = {'is_error': 1,
                         'error_log': str(error)}
@@ -156,6 +159,7 @@ class UserApi(Resource):
         except Exception as error:
             response = {'is_error': 1,
                         'error_log': str(error)}
+        print(response)
         return json.dumps(response)
 
     def put(self):
@@ -186,6 +190,7 @@ class ManagerDBApi(Resource):
         return {'status': 'ok'}
 
     def get(self):
+        db.create_all()
         return 'OK'
 
 

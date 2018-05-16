@@ -11,6 +11,7 @@ from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboar
 import requests
 from bs4 import BeautifulSoup
 import bs4, requests
+import json
 message_with_inline_keyboard = None
 
 def on_chat_message(msg):
@@ -70,20 +71,23 @@ def on_chat_message(msg):
     elif command == '🗓️ current weather 🗓️':
         r_get = requests.get('http://127.0.0.1:8002/person?telegram_id={}'.format(msg['from']['id']))
         response = r_get.json()
+        response = json.loads(response)
         print(response)
-        # r_put = requests.put('http://127.0.0.1:8001/person/',data = msg['from']['id'])
         if not response['is_error']:
             if not response['data']:
                 # |якщо юзера немає в базі даних то записується його юзернейм і айді в базу даних
                 data = {'user_tag':msg['from']['username'],'telegram_id':msg['from']['id']}
-                r_post = requests.post('http://127.0.0.1:8001/person/',data = data)
+                r_post = requests.post('http://127.0.0.1:8002/person',data = data)
                 r_post_data = r_post.json()
+                r_post_data = json.loads(r_post_data)
+                print(r_post_data)
                 user_id = r_post_data['id']
                 # |якщо юзер тільки що був записаний в базу, то в нього немає локації, тому бот просить надіслати   1/2
                 # |повідомлення і записує локацію в ба
                 bot.sendMessage(chat_id, 'Write location')
                 data = {'locations':msg['text'],'id':user_id,'user_tag':msg['from']['username'],'telegram_id':msg['from']['id']}
-                r_put = requests.put('http://127.0.0.1:8001/person/',data = data)
+                r_put = requests.put('http://127.0.0.1:8002/person/',data = data)
+                response = json.loads(response)
                 # r_put(locations = (msg['text']),user_tag = msg['from']['username'],telegram_id = msg['from']['id'])
         else:
             pass
@@ -290,7 +294,7 @@ def on_chat_message(msg):
         bot.sendMessage(chat_id, '*Виберіть мову*', reply_markup=markup,
 parse_mode='Markdown')
 # TOKEN = '577877864:AAEh1MKE62KPntQjSuEtH53sDYJDes3oYyM' newskit token
-TOKEN = "597420522:AAE3rbd2nwnrfFgLwOxGPp2AvKUqSwX3Srg"
+TOKEN = "597420522:AAEsWMZm1C2pHx0oAXD6Nu3DYfoY0up87uE"
 bot = telepot.Bot(TOKEN)
 answerer = telepot.helper.Answerer(bot)
 MessageLoop(bot, {'chat': on_chat_message}).run_as_thread()
