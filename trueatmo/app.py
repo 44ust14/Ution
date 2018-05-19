@@ -125,7 +125,6 @@ class UnprocessedApi(Resource):
 
 
 class UserApi(Resource):
-    def wait(self):
     def get(self):
         try:
             telegram_id = request.args.get('telegram_id')
