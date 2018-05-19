@@ -36,6 +36,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_tag = db.Column(db.String(50))
     locations = db.Column(db.String(80))
+    waiting_for_location =db.Column(db.Integer)
 
 
     def __init__(self, id, user_tag , locations):

@@ -14,14 +14,14 @@ import bs4, requests
 import json
 message_with_inline_keyboard = None
 
+
 def on_chat_message(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
-    # print(msg['from']['id'])
-    # print(msg['from']['username'])
     print(msg)
     # response = requests.get('127.0.0.1:8001/person/{}'.format(msg['from']['id']))
     # update['message']['chat']['first_name']
     if content_type != 'text':
+        bot.sendMessage(chat_id, "*Sorry, bot can't understand your message 😢😢*", parse_mode='Markdown')
         return
     command = msg['text'].lower()
 
@@ -31,6 +31,9 @@ def on_chat_message(msg):
     text = 'lvov'
 
     # text = msg['text'].lower()
+    # bot.sendMessage(462005869, '*Write your location!*', parse_mode='Markdown')
+
+
 
     def search_meteo(text):
         response = requests.post('http://meteo.ua/ua/search-forecast-by-city-name', data={'name': text})
@@ -61,6 +64,7 @@ def on_chat_message(msg):
     p3 = b.select('.wwt_tmps')
     minmaxdoba = p3[0].getText()
     # print(minmaxdoba)
+
     if command == '/start' :
         markup = ReplyKeyboardMarkup(keyboard=[
         [KeyboardButton(text='🗓️ current weather 🗓️'), KeyboardButton(text='📅 weekly weather 📅',)],
@@ -68,29 +72,39 @@ def on_chat_message(msg):
         ])
         # bot.sendMessage(chat_id, "", parse_mode='HTML')
         bot.sendMessage(chat_id, '*HI!*', reply_markup=markup, parse_mode='Markdown')
+#
     elif command == '🗓️ current weather 🗓️':
-        r_get = requests.get('http://127.0.0.1:8002/person?telegram_id={}'.format(msg['from']['id']))
-        response = r_get.json()
-        response = json.loads(response)
-        print(response)
-        if not response['is_error']:
-            if not response['data']:
-                # |якщо юзера немає в базі даних то записується його юзернейм і айді в базу даних
-                data = {'user_tag':msg['from']['username'],'telegram_id':msg['from']['id']}
-                r_post = requests.post('http://127.0.0.1:8002/person',data = data)
-                r_post_data = r_post.json()
-                r_post_data = json.loads(r_post_data)
-                print(r_post_data)
-                user_id = r_post_data['id']
+        #написати функцію записування в базу даних waiting_for_location
+        bot.sendMessage(chat_id, 'Write location')
+    # elif command == '🗓️ current weather 🗓️':
+    #     r_get = requests.get('http://127.0.0.1:8002/person?telegram_id={}'.format(msg['from']['id']))
+    #     response = r_get.json()
+    #     response = json.loads(response)
+    #     print(response)
+    #     if not response['is_error']:
+    #         if not response['data']:
+    #         if True:
+    #             |якщо юзера немає в базі даних то записується його юзернейм і айді в базу даних
+                # data = {'user_tag':msg['from']['username'],'telegram_id':msg['from']['id']}
+                # r_post = requests.post('http://127.0.0.1:8002/person',data = data)
+                # r_post_data = r_post.json()
+                # r_post_data = json.loads(r_post_data)
+                # print(r_post_data)
+                # user_id = r_post_data['id']
                 # |якщо юзер тільки що був записаний в базу, то в нього немає локації, тому бот просить надіслати   1/2
                 # |повідомлення і записує локацію в ба
-                bot.sendMessage(chat_id, 'Write location')
-                data = {'locations':msg['text'],'id':user_id,'user_tag':msg['from']['username'],'telegram_id':msg['from']['id']}
-                r_put = requests.put('http://127.0.0.1:8002/person/',data = data)
-                response = json.loads(response)
-                # r_put(locations = (msg['text']),user_tag = msg['from']['username'],telegram_id = msg['from']['id'])
-        else:
-            pass
+                # bot.sendMessage(chat_id, 'Write location')
+                # bot.sendMessage(chat_id,msg['text'])
+                # data = {'locations':msg['text'],'id':user_id,'user_tag':msg['from']['username'],'telegram_id':msg['from']['id']}
+                # r_put = requests.put('http://127.0.0.1:8002/person/',data = data)
+                # response = json.loads(response)
+                # r_put(locations = (msg['text']),user_tag = msg['from']['username'],telegram_id = msg['from']['id']
+                # bot.sendMessage(chat_id, '*Write your location!*', parse_mode='Markdown')
+                # print(oldMessage)
+        # else:
+        #     pass
+    # if oldMessage_text == '🗓️ current weather 🗓️':
+    #     bot.sendMessage(chat_id, msg['text'])
     #     if r_get data = {'locations' : null}:
     #             bot.sendMessage(chat_id, 'Write location')
     #             r_put(locations=(msg['text']), user_tag=msg['from']['username'], telegram_id=msg['from']['id'])
@@ -294,7 +308,7 @@ def on_chat_message(msg):
         bot.sendMessage(chat_id, '*Виберіть мову*', reply_markup=markup,
 parse_mode='Markdown')
 # TOKEN = '577877864:AAEh1MKE62KPntQjSuEtH53sDYJDes3oYyM' newskit token
-TOKEN = "597420522:AAEsWMZm1C2pHx0oAXD6Nu3DYfoY0up87uE"
+TOKEN = "587773115:AAFhaSxrA8kOAx7ngc0iwvWqMGYHpjvIqL0"
 bot = telepot.Bot(TOKEN)
 answerer = telepot.helper.Answerer(bot)
 MessageLoop(bot, {'chat': on_chat_message}).run_as_thread()
