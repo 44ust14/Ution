@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:/Users/GOITeens/Documents/Ution/trueatmo/main_db.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:/Users/GOITeens/Giiit project/Ution/trueatmo/main_db.db'
 db = SQLAlchemy(app)
 
 

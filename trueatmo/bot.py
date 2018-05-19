@@ -72,9 +72,9 @@ def on_chat_message(msg):
         ])
         # bot.sendMessage(chat_id, "", parse_mode='HTML')
         bot.sendMessage(chat_id, '*HI!*', reply_markup=markup, parse_mode='Markdown')
-#
     elif command == '🗓️ current weather 🗓️':
         #написати функцію записування в базу даних waiting_for_location
+
         bot.sendMessage(chat_id, 'Write location')
     # elif command == '🗓️ current weather 🗓️':
     #     r_get = requests.get('http://127.0.0.1:8002/person?telegram_id={}'.format(msg['from']['id']))
