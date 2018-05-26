@@ -8,7 +8,7 @@ from meteo import get_weather_meteo
 app = Flask(__name__)
 api = Api(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///databases/main_db.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///databases\\main_db.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -59,13 +59,14 @@ class WeatherApi(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('city', type=str)
         args = parser.parse_args()
-        locatiion = args.city
-        city = City.query.filter_by(city=locatiion).first()
-        if city.timenow >= datetime.now() - timedelta(minutes=15):
+        location = args.city
+        city = City.query.filter_by(city=location).first()
+
+        if city and city.timenow >= datetime.now() - timedelta(minutes=15):
             now = Now.query.filter_by(city_id=city.id).first()
             forallday = ForAllDay.query.filter_by(city_id=city.id).first()
             return ()
-        data = get_weather_meteo(locatiion)
+        data = get_weather_meteo(location)
 
         return json.dumps(data)
 
