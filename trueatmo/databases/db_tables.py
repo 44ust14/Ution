@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(_name_)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///K://Nikita//SQlite//Ution-develop//trueatmo//databases//my_db.db'
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./my_db.db'
 db = SQLAlchemy(app)
 
 
@@ -35,7 +35,7 @@ class Now(db.Model):
         def __repr__(self):
             return '<Now %r>' % self.status
 
-class For_All_Day(db.Model):
+class ForAllDay(db.Model):
         id = db.Column(db.Integer , primary_key=True)
         day_part = db.Column(db.String(80))
         days = db.Column(db.String(80))
@@ -77,8 +77,7 @@ class City(db.Model):
     site = db.Column(db.String(80))
     timenow = db.Column(db.Integer)
     addresses = db.relationship('For_All_Day', backref='city',
-                                lazy='d'
-                                     'ynamic')
+                                lazy='dynamic')
 
 
     def __init__(self, id, city , minmaxtempdays , statdays ,site ,timenow ):
