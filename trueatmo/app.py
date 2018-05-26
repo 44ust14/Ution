@@ -7,8 +7,10 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 api = Api(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///C:\\Users\\GOITeens\\Neeew ution\\my_db.db"
+# app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///C:\\Users\\GOITeens\\Neeew ution\\my_db.db"
 # "C:\\Users\\GOITeens\\Neeew ution"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///home/lajob/Desktop/us/Ution/trueatmo/databases/main_db.db'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 # DBUSER = 'trueatmo'

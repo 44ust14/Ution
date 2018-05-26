@@ -76,11 +76,12 @@ def on_chat_message(msg):
         r_get = requests.get('http://127.0.0.1:8002/person?telegram_id={}'.format(msg['from']['id']))
         response = r_get.json()
         response = json.loads(response)
-        location = msg['text'].replace('/location','')
+        location = msg['text'].replace('/location','').lower()
         location = location.strip()
         data = {'locations': location, 'id': msg['from']['id'], 'user_tag': msg['from']['username'],'telegram_id': msg['from']['id']}
         r_put = requests.put('http://127.0.0.1:8002/person/', data=data)
-        response = json.loads(response)
+        # r_post_data = r_put.json()
+        # response = json.loads(response)
         r_put(locations='location', user_tag=msg['from']['username'], telegram_id=msg['from']['id'])
         bot.sendMessage(chat_id,location)
     elif command == '🗓️ current weather 🗓️':
@@ -304,7 +305,7 @@ def on_chat_message(msg):
         bot.sendMessage(chat_id, '*Виберіть мову*', reply_markup=markup,
 parse_mode='Markdown')
 # TOKEN = '577877864:AAEh1MKE62KPntQjSuEtH53sDYJDes3oYyM' newskit token
-TOKEN = "587773115:AAFiG9fPJ0QSCysevLdDoIM4pBm_UppEVs0"
+TOKEN = "587773115:AAHmGKQ1y5UZLmKRrmLznBSu6EN6UYtCz48"
 bot = telepot.Bot(TOKEN)
 answerer = telepot.helper.Answerer(bot)
 MessageLoop(bot, {'chat': on_chat_message}).run_as_thread()
