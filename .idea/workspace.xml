@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a7a02cb6-c1c7-4f61-bfa8-186d5a4cab57" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Ution.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Ution.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trueatmo/bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/trueatmo/bot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trueatmo/meteo.py" beforeDir="false" afterPath="$PROJECT_DIR$/trueatmo/meteo.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -20,8 +16,8 @@
       <file leaf-file-name="bot.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/trueatmo/bot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="96" column="81" selection-start-line="96" selection-start-column="81" selection-end-line="96" selection-end-column="81" />
+            <state relative-caret-position="348">
+              <caret line="406" column="77" selection-start-line="406" selection-start-column="77" selection-end-line="406" selection-end-column="77" />
               <folding>
                 <element signature="e#14#25#0" expanded="true" />
               </folding>
@@ -32,7 +28,7 @@
       <file leaf-file-name="app.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/trueatmo/app.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
+            <state relative-caret-position="-540">
               <caret line="54" column="13" lean-forward="true" selection-start-line="39" selection-start-column="14" selection-end-line="39" selection-end-column="17" />
               <folding>
                 <element signature="e#23#34#0" expanded="true" />
@@ -539,16 +535,6 @@
     <entry file="file://$PROJECT_DIR$/trueatmo/databases/db_tables.py" />
     <entry file="file://$PROJECT_DIR$/trueatmo/ex.py" />
     <entry file="file://$PROJECT_DIR$/trueatmo/databases/main_db.db" />
-    <entry file="file://$PROJECT_DIR$/trueatmo/app.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="54" column="13" lean-forward="true" selection-start-line="39" selection-start-column="14" selection-end-line="39" selection-end-column="17" />
-          <folding>
-            <element signature="e#23#34#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/trueatmo/meteo.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="354">
@@ -559,10 +545,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/trueatmo/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-540">
+          <caret line="54" column="13" lean-forward="true" selection-start-line="39" selection-start-column="14" selection-end-line="39" selection-end-column="17" />
+          <folding>
+            <element signature="e#23#34#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/trueatmo/bot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="96" column="81" selection-start-line="96" selection-start-column="81" selection-end-line="96" selection-end-column="81" />
+        <state relative-caret-position="348">
+          <caret line="406" column="77" selection-start-line="406" selection-start-column="77" selection-end-line="406" selection-end-column="77" />
           <folding>
             <element signature="e#14#25#0" expanded="true" />
           </folding>

@@ -293,7 +293,7 @@ def on_chat_message(msg):
         ['❌ Cancel ❌']
         ])
         bot.sendMessage(chat_id, '*Choose language*', reply_markup=markup, parse_mode='Markdown')
-    if command == '🏴󠁧󠁢󠁥󠁮󠁧󠁿 English 🏴':
+    if command == '🏴󠁧󠁢󠁥󠁮󠁧󠁿 English 🏴󠁧󠁢󠁥󠁮󠁧󠁿':
         markup = ReplyKeyboardMarkup(keyboard=[
             [KeyboardButton(text='📆 Show Weather 📆')],
             [KeyboardButton(text='🔧 Settings 🔧')],
@@ -404,7 +404,7 @@ def on_chat_message(msg):
                 user_data = response['data']
             user_id = response['data']['id']
             if response['data']['locations'] == None:
-                bot.sendMessage(chat_id, '*Напишіть "/location (ваша локація)" або "/l",щоб змінити стандартну локацію !*',
+                bot.sendMessage(chat_id, '*Напишіть "/location (ваша локація )" або "/l",щоб змінити стандартну локацію !*',
                                 parse_mode='Markdown')
         result = get_weather_meteo(response['data']['locations'])
         weather_d = result["ForAllDay"]
@@ -554,7 +554,7 @@ def on_chat_message(msg):
 
 
 # TOKEN = '577877864:AAEh1MKE62KPntQjSuEtH53sDYJDes3oYyM' newskit token
-TOKEN = "587773115:AAHv-cgtYYXhEmLsrXNQRozOFwP07yv5oTU"
+TOKEN = "587773115:AAGrPu60MCgv73crlfK0XXlvY2OG1BRn0pk"
 bot = telepot.Bot(TOKEN)
 answerer = telepot.helper.Answerer(bot)
 try:
