@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
-
+text='lviv'
 def search_meteo(text):
     response = requests.post('http://meteo.ua/ua/search-forecast-by-city-name', data={'name': text})
     b = bs4.BeautifulSoup(response.text, "html.parser")
@@ -24,6 +24,8 @@ def search_meteo(text):
     # print(hrefs)
     result = parse(hrefs=hrefs)
     # print(result)
+    print(result['Now'])
+
     return result
 
 
@@ -34,7 +36,7 @@ def parse(hrefs=None, response=None):
     b = bs4.BeautifulSoup(response.text, "html.parser")
     result = {}
     Now = {}
-    For_All_Day = []
+    ForAllDay = []
     City = {}
     p3 = b.select('.wi_now')
     tempnow = p3[0].getText().strip().replace('\n', '')
@@ -63,38 +65,38 @@ def parse(hrefs=None, response=None):
     # print(tempnight.strip())
 
     p3 = b.select('.wnow_cnt .wnow_icns img')
-    statsnight = p3[1]["title"].strip().replace('\n', '')
+    statsnight = p3[2]["title"].strip().replace('\n', '')
     # print(statsnight.strip())
 
     p3 = b.select('.wni_left')
-    feelsnight = p3[1].getText().strip().replace('\n', '')
+    feelsnight = p3[0].getText().strip().replace('\n', '')
     # print(feelsnight.strip())
 
     p3 = b.select('.wni_left')
-    precipitationnight = p3[2].getText().strip().replace('\n', '')
+    precipitationnight = p3[1].getText().strip().replace('\n', '')
     # print(precipitationnight.strip())
 
     p3 = b.select('.wni_left')
-    pressurenight = p3[3].getText().strip().replace('\n', '')
+    pressurenight = p3[2].getText().strip().replace('\n', '')
     # print(pressurenight.strip())
 
     p3 = b.select('.wni_left')
-    humiditynight = p3[4].getText().strip().replace('\n', '')
+    humiditynight = p3[3].getText().strip().replace('\n', '')
     # print(humiditynight.strip())
 
     p3 = b.select('.wni_left')
-    windnight = p3[5].getText().strip().replace('\n', '')
+    windnight = p3[4].getText().strip().replace('\n', '')
     # print(windnight.strip())
 
-    For_All_Day_night = {}
+    ForAllDay_night = {}
 
-    For_All_Day_night.update(days=daysnight, temp=tempnight, status=statsnight, feels=feelsnight,
+    ForAllDay_night.update(days=daysnight, temp=tempnight, status=statsnight, feels=feelsnight,
                              precipitation=precipitationnight, pressure=pressurenight,
                              humidity=humiditynight, wind=windnight)
-    For_All_Day.append(For_All_Day_night)
+    ForAllDay.append(ForAllDay_night)
 
     p3 = b.select('.wnow_cnt .wnow_days')
-    daysmorning = p3[2].getText().strip().replace('\n', '')
+    daysmorning = p3[1].getText().strip().replace('\n', '')
     # print(daysmorning.strip())
 
     p3 = b.select('.wnow_cnt .wnow_tmpr')
@@ -129,14 +131,14 @@ def parse(hrefs=None, response=None):
     windmorning = p3.getText().strip().replace('\n', '')
     # print(windmorning.strip())
 
-    For_All_Day_morning = {}
+    ForAllDay_morning = {}
 
-    For_All_Day_morning.update(days=daysmorning, temp=tempmorning,
+    ForAllDay_morning.update(days=daysmorning, temp=tempmorning,
                                status=statsmorning, feels=feelsmorning,
                                precipitation=precipitationmorning,
                                pressure=pressuremorning, humidity=humiditymorning,
                                wind=windmorning)
-    For_All_Day.append(For_All_Day_morning)
+    ForAllDay.append(ForAllDay_morning)
 
     p3 = b.select('.wnow_cnt .wnow_days')
     daysday = p3[2].getText().strip().replace('\n', '')
@@ -174,12 +176,12 @@ def parse(hrefs=None, response=None):
     windday = p3.getText().strip().replace('\n', '')
     # print(windday.strip())
 
-    For_All_Day_day = {}
+    ForAllDay_day = {}
 
-    For_All_Day_day.update(days=daysday, temp=tempday,
+    ForAllDay_day.update(days=daysday, temp=tempday,
                            status=statsday, feels=feelsday, precipitation=precipitationday,
                            pressure=pressureday, humidity=humidityday, wind=windday)
-    For_All_Day.append(For_All_Day_day)
+    ForAllDay.append(ForAllDay_day)
 
     p3 = b.select('td .wnow_days')
     daysevening = p3[3].getText().strip().replace('\n', '')
@@ -217,14 +219,14 @@ def parse(hrefs=None, response=None):
     windevening = p3.getText().strip().replace('\n', '')
     # print(windevening.strip())
 
-    For_All_Day_evening = {}
+    ForAllDay_evening = {}
 
-    For_All_Day_evening.update(days=daysevening, temp=tempevening,
+    ForAllDay_evening.update(days=daysevening, temp=tempevening,
                                status=statsevening, feels=feelsevening,
                                precipitation=precipitationevening,
                                pressure=pressureevening, humidity=humidityevening,
                                wind=windevening)
-    For_All_Day.append(For_All_Day_evening)
+    ForAllDay.append(ForAllDay_evening)
 
     p3 = b.select('.wwt_tmps')
     minmaxtempdays = p3[0].getText().strip().replace('\n', '')
@@ -238,12 +240,13 @@ def parse(hrefs=None, response=None):
     # print(result)
 
     result.update(Now=Now)
-    result.update(ForAllDay=For_All_Day)
+    result.update(ForAllDay=ForAllDay)
     result.update(City=City)
     return result
 
 
 def get_weather_meteo(text):
+
     return search_meteo(text)
 
 
