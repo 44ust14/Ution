@@ -19,11 +19,11 @@ def search_meteo(text):
     if not p3:
         result = parse(response=response)
         return result
-    print(p3)
+    # print(p3)
     hrefs = p3[0]['href']
-    print(hrefs)
+    # print(hrefs)
     result = parse(hrefs=hrefs)
-    print(result)
+    # print(result)
     return result
 
 
@@ -38,213 +38,207 @@ def parse(hrefs=None, response=None):
     City = {}
     p3 = b.select('.wi_now')
     tempnow = p3[0].getText().strip().replace('\n', '')
-    print(tempnow.strip())
+    # print(tempnow.strip())
 
     p3 = b.select('.wiw_power')
     windnow = p3[0].getText().strip().replace('\n', '')
-    print(windnow.strip())
+    # print(windnow.strip())
 
     p3 = b.select('.win_img img')
     statsnow = p3[1]["title"].strip().replace('\n', '')
-    print(statsnow.strip())
+    # print(statsnow.strip())
 
     p3 = b.select('.wwt_tmps')
     minmaxtempdays = p3[0].getText().strip().replace('\n', '')
-    print(minmaxtempdays.strip())
+    # print(minmaxtempdays.strip())
 
-
-
-
-    Now.update(tempnow=tempnow, windnow=windnow, statsnow = statsnow, minmaxtempdays = minmaxtempdays)
-
-
-
+    Now.update(tempnow=tempnow, windnow=windnow, statusnow=statsnow, minmaxtempdays=minmaxtempdays)
 
     p3 = b.select('.wnow_cnt .wnow_days ')
     daysnight = p3[0].getText().strip().replace('\n', '')
-    print(daysnight.strip())
+    # print(daysnight.strip())
 
     p3 = b.select('.wnow_cnt .wnow_tmpr')
     tempnight = p3[0].getText().strip().replace('\n', '')
-    print(tempnight.strip())
+    # print(tempnight.strip())
 
     p3 = b.select('.wnow_cnt .wnow_icns img')
     statsnight = p3[1]["title"].strip().replace('\n', '')
-    print(statsnight.strip())
+    # print(statsnight.strip())
 
     p3 = b.select('.wni_left')
     feelsnight = p3[1].getText().strip().replace('\n', '')
-    print(feelsnight.strip())
+    # print(feelsnight.strip())
 
     p3 = b.select('.wni_left')
     precipitationnight = p3[2].getText().strip().replace('\n', '')
-    print(precipitationnight.strip())
+    # print(precipitationnight.strip())
 
     p3 = b.select('.wni_left')
     pressurenight = p3[3].getText().strip().replace('\n', '')
-    print(pressurenight.strip())
+    # print(pressurenight.strip())
 
     p3 = b.select('.wni_left')
     humiditynight = p3[4].getText().strip().replace('\n', '')
-    print(humiditynight.strip())
+    # print(humiditynight.strip())
 
     p3 = b.select('.wni_left')
     windnight = p3[5].getText().strip().replace('\n', '')
-    print(windnight.strip())
+    # print(windnight.strip())
 
     For_All_Day_night = {}
 
-    For_All_Day_night.update(daysnight=daysnight, tempnight=tempnight, statsnight=statsnight, feelsnight=feelsnight,
-                             precipitationnight=precipitationnight, pressurenight=pressurenight,
-                             humiditynight=humiditynight, windnight=windnight)
+    For_All_Day_night.update(days=daysnight, temp=tempnight, status=statsnight, feels=feelsnight,
+                             precipitation=precipitationnight, pressure=pressurenight,
+                             humidity=humiditynight, wind=windnight)
     For_All_Day.append(For_All_Day_night)
 
     p3 = b.select('.wnow_cnt .wnow_days')
     daysmorning = p3[2].getText().strip().replace('\n', '')
-    print(daysmorning.strip())
+    # print(daysmorning.strip())
 
     p3 = b.select('.wnow_cnt .wnow_tmpr')
     tempmorning = p3[1].getText().strip().replace('\n', '')
-    print(tempmorning.strip())
+    # print(tempmorning.strip())
 
     p3 = b.select('.wnow_cnt .wnow_icns img')
     statsmorning = p3[1]["title"].strip().replace('\n', '')
-    print(statsmorning)
+    # print(statsmorning)
 
     p3 = b.select('.wnow_info td div')
     feelsmorning = p3[1].getText().strip().replace('\n', '')
-    print(feelsmorning.strip())
+    # print(feelsmorning.strip())
 
     wnow_infos = b.select('.wnow_info')
     p3 = wnow_infos[1].select('td div')[2]
     precipitationmorning = p3.getText().strip().replace('\n', '')
-    print(precipitationmorning.strip())
+    # print(precipitationmorning.strip())
 
     wnow_info = b.select('.wnow_info')
     p3 = wnow_info[2].select('td div')[2]
     pressuremorning = p3.getText().strip().replace('\n', '')
-    print(pressuremorning.strip())
+    # print(pressuremorning.strip())
 
     wnow_infos = b.select('.wnow_info')
     p3 = wnow_infos[3].select('td div')[1]
     humiditymorning = p3.getText().strip().replace('\n', '')
-    print(humiditymorning.strip())
+    # print(humiditymorning.strip())
 
     wnow_infos = b.select('.wnow_info')
     p3 = wnow_infos[4].select('td div')[1]
     windmorning = p3.getText().strip().replace('\n', '')
-    print(windmorning.strip())
+    # print(windmorning.strip())
 
     For_All_Day_morning = {}
 
-    For_All_Day_morning.update(daysmorning=daysmorning, tempmorning=tempmorning,
-                               statsmorning=statsmorning, feelsmorning=feelsmorning,
-                               precipitationmorning=precipitationmorning,
-                               pressuremorning=pressuremorning, humiditymorning=humiditymorning,
-                               windmorning=windmorning)
+    For_All_Day_morning.update(days=daysmorning, temp=tempmorning,
+                               status=statsmorning, feels=feelsmorning,
+                               precipitation=precipitationmorning,
+                               pressure=pressuremorning, humidity=humiditymorning,
+                               wind=windmorning)
     For_All_Day.append(For_All_Day_morning)
 
     p3 = b.select('.wnow_cnt .wnow_days')
     daysday = p3[2].getText().strip().replace('\n', '')
-    print(daysday.strip())
+    # print(daysday.strip())
 
     p3 = b.select('.wnow_cnt .wnow_tmpr')
     tempday = p3[2].getText().strip().replace('\n', '')
-    print(tempday.strip())
+    # print(tempday.strip())
 
     p3 = b.select('.wnow_cnt .wnow_icns img')
     statsday = p3[1]["title"].strip().replace('\n', '')
-    print(statsday.strip())
+    # print(statsday.strip())
 
     p3 = b.select('.wnow_info td div')
     feelsday = p3[1].getText().strip().replace('\n', '')
-    print(feelsday.strip())
+    # print(feelsday.strip())
 
     wnow_infos = b.select('.wnow_info')
     p3 = wnow_infos[1].select('td div')[2]
     precipitationday = p3.getText().strip().replace('\n', '')
-    print(precipitationday.strip())
+    # print(precipitationday.strip())
 
     wnow_info = b.select('.wnow_info')
     p3 = wnow_info[2].select('td div')[2]
     pressureday = p3.getText().strip().replace('\n', '')
-    print(pressureday.strip())
+    # print(pressureday.strip())
 
     wnow_infos = b.select('.wnow_info')
     p3 = wnow_infos[3].select('td div')[2]
     humidityday = p3.getText().strip().replace('\n', '')
-    print(humidityday.strip())
+    # print(humidityday.strip())
 
     wnow_infos = b.select('.wnow_info')
     p3 = wnow_infos[4].select('td div')[2]
     windday = p3.getText().strip().replace('\n', '')
-    print(windday.strip())
+    # print(windday.strip())
 
     For_All_Day_day = {}
 
-    For_All_Day_day.update(daysday=daysday, tempday=tempday,
-                           statsday=statsday, feelsday=feelsday, precipitationday=precipitationday,
-                           pressureday=pressureday, humidityday=humidityday, windday=windday)
+    For_All_Day_day.update(days=daysday, temp=tempday,
+                           status=statsday, feels=feelsday, precipitation=precipitationday,
+                           pressure=pressureday, humidity=humidityday, wind=windday)
     For_All_Day.append(For_All_Day_day)
 
     p3 = b.select('td .wnow_days')
     daysevening = p3[3].getText().strip().replace('\n', '')
-    print(daysevening.strip())
+    # print(daysevening.strip())
 
     p3 = b.select('.wnow_cnt .wnow_tmpr')
     tempevening = p3[3].getText().strip().replace('\n', '')
-    print(tempevening.strip())
+    # print(tempevening.strip())
 
     p3 = b.select('.wnow_cnt .wnow_icns img')
     statsevening = p3[3]["title"].strip().replace('\n', '')
-    print(statsevening.strip())
+    # print(statsevening.strip())
 
     p3 = b.select('.wnow_info td div')
     feelsevening = p3[3].getText().strip().replace('\n', '')
-    print(feelsevening.strip())
+    # print(feelsevening.strip())
 
     wnow_infos = b.select('.wnow_info')
     p3 = wnow_infos[1].select('td div')[3]
     precipitationevening = p3.getText().strip().replace('\n', '')
-    print(precipitationevening.strip())
+    # print(precipitationevening.strip())
 
     wnow_info = b.select('.wnow_info')
     p3 = wnow_info[2].select('td div')[3]
     pressureevening = p3.getText().strip().replace('\n', '')
-    print(pressureevening.strip())
+    # print(pressureevening.strip())
 
     wnow_infos = b.select('.wnow_info')
     p3 = wnow_infos[3].select('td div')[3]
     humidityevening = p3.getText().strip().replace('\n', '')
-    print(humidityevening.strip())
+    # print(humidityevening.strip())
 
     wnow_infos = b.select('.wnow_info')
     p3 = wnow_infos[4].select('td div')[3]
     windevening = p3.getText().strip().replace('\n', '')
-    print(windevening.strip())
+    # print(windevening.strip())
 
     For_All_Day_evening = {}
 
-    For_All_Day_evening.update(daysevening=daysevening, tempevening=tempevening,
-                               statsevening=statsevening, feelsevening=feelsevening,
-                               precipitationevening=precipitationevening,
-                               pressureevening=pressureevening, humidityevening=humidityevening,
-                               windevening=windevening)
+    For_All_Day_evening.update(days=daysevening, temp=tempevening,
+                               status=statsevening, feels=feelsevening,
+                               precipitation=precipitationevening,
+                               pressure=pressureevening, humidity=humidityevening,
+                               wind=windevening)
     For_All_Day.append(For_All_Day_evening)
 
     p3 = b.select('.wwt_tmps')
     minmaxtempdays = p3[0].getText().strip().replace('\n', '')
-    print(minmaxtempdays.strip())
+    # print(minmaxtempdays.strip())
 
     p3 = b.select('#dt_today > a > div.wwt_img.vl_parent > span.vl_child > span > img')
     statsdays = p3[0]["title"].strip().replace('\n', '')
-    print(statsdays.strip())
+    # print(statsdays.strip())
 
-    City.update(minmaxtempdays = minmaxtempdays, statsdays = statsdays)
-    print(result)
+    City.update(minmaxtempdays=minmaxtempdays, statsdays=statsdays, site='meteo.ua')
+    # print(result)
 
     result.update(Now=Now)
-    result.update(For_All_Day=For_All_Day)
+    result.update(ForAllDay=For_All_Day)
     result.update(City=City)
     return result
 

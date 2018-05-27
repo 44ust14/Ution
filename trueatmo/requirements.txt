@@ -38,5 +38,6 @@ urllib3==1.22
 w3lib==1.19.0
 Werkzeug==0.14.1
 zope.interface==4.4.3
-psycopg2
-telepot
+psycopg2==2.7.4
+telepot==12.6
+

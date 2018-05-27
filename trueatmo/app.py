@@ -1,18 +1,22 @@
 # -*- coding:utf-8 -*-
 import json
-from flask import Flask, request, jsonify
-from flask_restful import Resource, Api
+from datetime import datetime, timedelta
+from flask import Flask, request
+from flask_restful import Resource, Api, reqparse
 from flask_sqlalchemy import SQLAlchemy
+from meteo import get_weather_meteo
 
 app = Flask(__name__)
 api = Api(app)
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///C:\\Users\\GOITeens\\Neeew ution\\my_db.db"
 # "C:\\Users\\GOITeens\\Neeew ution"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///home/lajob/Desktop/us/Ution/trueatmo/databases/main_db.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main_db.db'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+
 # DBUSER = 'trueatmo'
 # DBPASS = '1q2w3e'
 # DBHOST = 'db'
@@ -28,31 +32,53 @@ db = SQLAlchemy(app)
 # db = SQLAlchemy(app)
 
 
-class Unprocessed(db.Model):
+class Now(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    city_or_country = db.Column(db.String(80))
-    Cmin = db.Column(db.Integer)
-    Cmax = db.Column(db.Integer)
-    Ccur = db.Column(db.Integer)
-    status = db.Column(db.String(80))
-    wind = db.Column(db.Integer)
-    site = db.Column(db.String(80))
-    time = db.Column(db.Integer)
-
-    def __init__(self, city_or_country, Cmin, Cmax, Ccur, status, wind, site, time, id=None):
-        self.id = id
-        self.city_or_country = city_or_country
-        self.Cmin = Cmin
-        self.Cmax = Cmax
-        self.Ccur = Ccur
-        self.status = status
-        self.Ccur = Ccur
-        self.wind = wind
-        self.site = site
-        self.time = time
+    tempMax = db.Column(db.Integer)
+    tempMin = db.Column(db.Integer)
+    tempnow = db.Column(db.Integer)
+    minmaxtempdays = db.Column(db.String(80))
+    windnow = db.Column(db.Integer)
+    feels = db.Column(db.String(80))
+    statusnow = db.Column(db.String(80))
+    notes = db.Column(db.String(80))
+    timenow = db.Column(db.Integer, default=int(datetime.now().timestamp()))
+    city_id = db.Column(db.Integer, db.ForeignKey('city.id'))
 
     def __repr__(self):
-        return '<Unprocessed %r>' % self.status
+        return '<Now %r>' % self.status
+
+
+class ForAllDay(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    day_part = db.Column(db.String(80))
+    days = db.Column(db.String(80))
+    temp = db.Column(db.Integer)
+    status = db.Column(db.String(80))
+    feels = db.Column(db.Integer)
+    precipitation = db.Column(db.Integer)
+    pressure = db.Column(db.Integer)
+    humidity = db.Column(db.Integer)
+    wind = db.Column(db.Integer)
+    timenow = db.Column(db.Integer, default=int(datetime.now().timestamp()))
+    city_id = db.Column(db.Integer, db.ForeignKey('city.id'))
+
+    def __repr__(self):
+        return '<Day %r>' % self.status
+
+
+class City(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    city = db.Column(db.String(80))
+    minmaxtempdays = db.Column(db.String(80))
+    statsdays = db.Column(db.String(80))
+    site = db.Column(db.String(80))
+    timenow = db.Column(db.Integer, default=int(datetime.now().timestamp()))
+    addresses = db.relationship('ForAllDay', backref='city',
+                                lazy='dynamic')
+
+    def __repr__(self):
+        return '<Next_Day %r>' % self.statsdays
 
 
 class User(db.Model):
@@ -71,59 +97,60 @@ class User(db.Model):
         return '<User %r>' % self.user_tag
 
 
-class Processed(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    city_or_country = db.Column(db.String(80))
-    Cmin = db.Column(db.Integer)
-    Cmax = db.Column(db.Integer)
-    Ccur = db.Column(db.Integer)
-    status = db.Column(db.String(80))
-    wind = db.Column(db.Integer)
-    time = db.Column(db.Integer)
+class WeatherApi(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('id', type=int)
+    parser.add_argument('tempMax', type=int)
+    parser.add_argument('tempMin', type=int)
+    parser.add_argument('tempnow', type=int)
+    parser.add_argument('wind', type=int)
+    parser.add_argument('feels', type=str)
+    parser.add_argument('status', type=str)
+    parser.add_argument('notes', type=str)
+    parser.add_argument('site', type=str)
+    parser.add_argument('timenow', type=int)
+    parser.add_argument('city_id', type=int)
 
-    def __init__(self, city_or_country, Cmin, Cmax, Ccur, status, wind, time, id=None):
-        self.id = id
-        self.city_or_country = city_or_country
-        self.Cmin = Cmin
-        self.Cmax = Cmax
-        self.Ccur = Ccur
-        self.status = status
-        self.Ccur = Ccur
-        self.wind = wind
-        self.time = time
-
-    def __repr__(self):
-        return '<Processed %r>' % self.city_or_country
-
-
-class UnprocessedApi(Resource):
-    def get(self):
-        city_or_country = request.args['city_or_country']
-        Cmin = request.args['Cmin']
-        Cmax = request.args['Cmax']
-        Ccur = request.args['Ccur']
-        status = request.args['status']
-        wind = request.args['wind']
-        site = request.args['site']
-        time = request.args['time']
-        user = User.query.filter_by(city_or_country=city_or_country, ).first()
-        return jsonify({'Cmin': Cmin})
+    parser = reqparse.RequestParser()
+    parser.add_argument('user_tag', type=int, help='Rate cannot be converted')
+    parser.add_argument('name')
 
     def post(self):
-        city_or_country = request.form['city_or_country']
-        Cmin = request.form['Cmin']
-        Cmax = request.form['Cmax']
-        Ccur = request.form['Ccur']
-        status = request.form['status']
-        wind = request.form['wind']
-        site = request.form['site']
-        time = request.form['time']
-        row = Unprocessed(city_or_country, Cmin, Cmax, Ccur, status, wind, site, time)
-        db.session.add(row)
+        try:
+            return json.dumps({'status': 'ok'})
+        except Exception as error:
+            response = {'is_error': 1,
+            'error_log': str(error)}
+        return json.dumps(response)
+
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('city', type=str)
+        args = parser.parse_args()
+        location = args.city
+        city = City.query.filter_by(city=location).first()
+
+        if city and datetime.fromtimestamp(city.timenow) >= datetime.now() - timedelta(minutes=15):
+            now = Now.query.filter_by(city_id=city.id).first()
+            forallday = ForAllDay.query.filter_by(city_id=city.id)
+            data = {'City': row2dict(city),
+                    'Now': row2dict(now),
+                    'ForAllDay': rows2dict(forallday)}
+            return json.dumps(data)
+        data = get_weather_meteo(location)
+        data['City'].update(city=location)
+        city = City(**data['City'])
+        db.session.add(city)
         db.session.commit()
-        return {'status': 'ok'}
-
-
+        data['Now'].update(city_id=city.id)
+        now = Now(**data['Now'])
+        db.session.add(now)
+        db.session.commit()
+        for day_time in data['ForAllDay']:
+            day_time.update(city_id=city.id)
+            db.session.add(ForAllDay(**day_time))
+            db.session.commit()
+        return json.dumps(data)
 
 
 class UserApi(Resource):
@@ -131,14 +158,14 @@ class UserApi(Resource):
         try:
             telegram_id = request.args.get('telegram_id')
             user = User.query.filter_by(telegram_id=telegram_id).first()
-            data= {}
+            data = {}
             if user:
                 data = {'id': user.id,
                         'user_tag': user.user_tag,
                         'telegram_id': user.telegram_id,
                         'locations': user.locations}
             response = {'is_error': 0,
-                    'data': data}
+                        'data': data}
 
         except Exception as error:
             response = {'is_error': 1,
@@ -192,13 +219,25 @@ class ManagerDBApi(Resource):
         return {'status': 'ok'}
 
     def get(self):
+        db.drop_all()
         db.create_all()
         return 'OK'
 
 
+def rows2dict(rows):
+    return [row2dict(row) for row in rows]
+
+
+def row2dict(row):
+    d = {}
+    for column in row.__table__.columns:
+        d[column.name] = str(getattr(row, column.name))
+    return d
+
+
 api.add_resource(UserApi, '/person')
 api.add_resource(ManagerDBApi, '/manager')
-api.add_resource(UnprocessedApi, '/unprocessed')
+api.add_resource(WeatherApi, '/weather')
 
 if __name__ == '__main__':
     app.run(debug=True, port=8002)
