@@ -193,10 +193,10 @@ class UserApi(Resource):
 
     def put(self):
         try:
-            id = request.form.get['id']
-            user_tag = request.form.get['user_tag']
-            telegram_id = request.form.get['telegram_id']
-            locations = request.form.get['locations']
+            id = request.form.get('id')
+            user_tag = request.form.get('user_tag')
+            telegram_id = request.form.get('telegram_id')
+            locations = request.form.get('locations')
             user = User.query.filter_by(id=id).first()
             user.user_tag = user_tag
             user.telegram_id = telegram_id
