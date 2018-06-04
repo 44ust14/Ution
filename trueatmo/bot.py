@@ -33,6 +33,8 @@ def on_chat_message(msg):
     # text = msg['text'].lower()
     # bot.sendMessage(462005869, '*Write your location!*', parse_mode='Markdown')
 
+    # if content_type == 'text':
+    #     bot.sendMessage(chat_id, '*Hacked by Ustym!*',  parse_mode='Markdown')
 
     def search_meteo(text):
         response = requests.post('http://meteo.ua/ua/search-forecast-by-city-name', data={'name': text})
@@ -553,8 +555,8 @@ def on_chat_message(msg):
         # ukrainian section
 
 
-# TOKEN = '577877864:AAEh1MKE62KPntQjSuEtH53sDYJDes3oYyM' newskit token
-TOKEN = "587773115:AAGrPu60MCgv73crlfK0XXlvY2OG1BRn0pk"
+# TOKEN = '577877864:AAEh1MKE62KPntQjSuEtH53sDYJDes3oYyM'
+TOKEN = "587773115:AAFrW2NWni5052mgSeQBA136aFeqL9nrT-A"
 bot = telepot.Bot(TOKEN)
 answerer = telepot.helper.Answerer(bot)
 try:
